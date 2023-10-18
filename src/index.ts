@@ -1,47 +1,32 @@
-import express from "express"
-import http from "http"
-import compression from "compression"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import bodyParser from "body-parser"
-const { Client } = require('pg');
+import * as express from "express"
+import * as bodyParser from "body-parser"
+import { Request, Response } from "express"
+import { AppDataSource } from "./data-source"
+import { Routes } from "./routes"
+import { User } from "./entity/User"
 
+AppDataSource.initialize().then(async () => {
 
-const app = express()
+    
+    const app = express()
+    app.use(bodyParser.json())
 
+    Routes.forEach(route => {
+        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
+            const result = (new (route.controller as any))[route.action](req, res, next)
+            if (result instanceof Promise) {
+                result.then(result => result !== null && result !== undefined ? res.send(result) : undefined)
 
-app.use(cors({
-    credentials: true
-}));
-
-app.use(compression());
-
-app.use(bodyParser());
-
-app.use(cookieParser());
-
-
-const server = http.createServer(app);
-
-server.listen(8080, () => {
-    console.log('Server running on http://localhost:8080/');
-
-
-})
-
-const client = new Client({
-    user: 'postgress',
-    host: 'localhost',
-    database: 'library_api',
-    password: '1234',
-    port: '5432' 
-  });
-  
- 
-  client.connect()
-    .then(() => {
-      console.log('Connected to PostgreSQL');
+            } else if (result !== null && result !== undefined) {
+                res.json(result)
+            }
+        })
     })
-    .catch((err:any) => {
-      console.error('Error connecting to PostgreSQL:', err);
-    });
+
+   
+    app.listen(3000)
+
+    
+    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results")
+
+}).catch(error => console.log(error))
