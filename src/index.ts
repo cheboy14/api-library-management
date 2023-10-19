@@ -22,7 +22,6 @@ AppDataSource.initialize().then(async () => {
         })
     })
 
-   
     app.listen(8080)
 
     

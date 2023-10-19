@@ -1,9 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column ,ManyToOne } from "typeorm"
+import {Author}  from "./Authors";
+import { Category } from "./Categories";
+
 
 @Entity("books")
 export class Books{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id:number
 
     @Column()
@@ -13,8 +16,15 @@ export class Books{
     description:string
 
 
-    @Column()
-    author: string;
+    @ManyToOne(() => Author, (author)=>author.books)
+    author: Author; 
+
+
+    @ManyToOne(() => Category, (category)=>category.books)
+    category: Category; 
+
+    @Column("decimal", { precision: 10, scale: 2 })
+    price: number;
 
 
 }
