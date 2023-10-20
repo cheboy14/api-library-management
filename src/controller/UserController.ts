@@ -30,7 +30,7 @@ export class UserController {
 
 
         if (!passwordIsVavlid) {
-            return response.json({ message: 'Authentication failed. Incorrect password.' });
+            return response.json({ message: 'Authentication failed. Incorrect Username and password.' });
         }
 
         const token = jwt.sign({ userId: user.id, username: user.fullName }, 'your-secret-key', {

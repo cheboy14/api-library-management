@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser"
 import { Request, Response } from "express"
 import { AppDataSource } from "./data-source"
 import { Routes } from "./routes"
+import { UserController } from "./controller/UserController"
 
 AppDataSource.initialize().then(async () => {
 
@@ -21,6 +22,9 @@ AppDataSource.initialize().then(async () => {
             }
         })
     })
+
+
+   
 
     app.listen(8080)
 
